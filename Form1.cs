@@ -44,7 +44,7 @@ namespace GestionArticle
                 Random rand = new Random();
                 foreach (string art in arts)
                 {
-                    stock.Add(new Article(art, Math.Round(rand.NextDouble() + rand.Next(50), 2), rand.Next(500)));
+                    stock.Add(new Article(art, Math.Round(rand.NextDouble() + rand.Next(350), 2), rand.Next(999)));
 
                 }
             }
