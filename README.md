@@ -3,6 +3,7 @@
 
 # Main changes : 
 `
+
         private void InitAticles()
         {
             try
@@ -38,4 +39,5 @@
                 XmlSerializer xml = new XmlSerializer(stock.GetType());
                 xml.Serialize(f, stock);
             }
-        }`
+        }
+`
