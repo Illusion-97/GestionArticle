@@ -3,10 +3,13 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Drawing;
+using System.IO;
 using System.Linq;
+using System.Runtime.Serialization.Formatters.Binary;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using System.Xml.Serialization;
 
 namespace GestionArticle
 {
@@ -15,33 +18,46 @@ namespace GestionArticle
         private List<Article> stock;
         public Form1()
         {
+            Icon = Icon.FromHandle(((Bitmap)Image.FromFile("icon.png")).GetHicon());
             InitializeComponent();
             InitAticles();
         }
 
         private void InitAticles()
         {
-            Random rand = new Random();
-            string[] arts = { 
-                "Patte d'Arakne",
-                "Plume de Tofu",
-                "Peau de Larve Orange",
-                "Poil de Mulou",
-                "Scalp de Trool",
-                "Etoffe de Kanigrou",
-                "Pointe de Flèche du Bwork Archer",
-                "Laine de Boufton Noir",
-                "Ecaille de Crocodaille",
-                "Boue du Boo",
-                "Dofawa"
-            };
-            stock = new List<Article>();
-            foreach(string art in arts)
+            try
             {
-                stock.Add(new Article(art, Math.Round(rand.NextDouble() + rand.Next(50),2), rand.Next(500)));
+                using (FileStream f = new FileStream("arts.xml", FileMode.Open))
+                {
+                    XmlSerializer xml = new XmlSerializer(typeof(List<Article>));
+                    stock = (List<Article>)xml.Deserialize(f);
+                }
+            }
+            catch (Exception)
+            {
+                string[] arts = { };
+                using (StreamReader stream = new StreamReader("arts.txt"))
+                {
+                    arts = stream.ReadToEnd().Split(',');
+                }
+                stock = new List<Article>();
+                Random rand = new Random();
+                foreach (string art in arts)
+                {
+                    stock.Add(new Article(art, Math.Round(rand.NextDouble() + rand.Next(50), 2), rand.Next(500)));
 
+                }
             }
             AfficherListArticle(stock);
+        }
+
+        private void Save()
+        {
+            using (FileStream f = new FileStream("arts.xml", FileMode.Create))
+            {
+                XmlSerializer xml = new XmlSerializer(typeof(List<Article>));
+                xml.Serialize(f, stock);
+            }
         }
 
         public void AfficherListArticle(List<Article> articles)
@@ -178,6 +194,11 @@ namespace GestionArticle
                 }
                 else { AfficherListArticle(found); }
             } catch (Exception) { delClear_Click(sender,e); }
+        }
+
+        private void Form1_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            Save();
         }
     }
 }

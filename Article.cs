@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Xml.Serialization;
 
 namespace GestionArticle
 {
@@ -11,10 +12,15 @@ namespace GestionArticle
         public Article()
         {
         }
+        [XmlAttribute]
         private static int count = 0;
+        [XmlAttribute]
         public int numero { get; set; }
+        [XmlAttribute]
         public string nom { get; set; }
+        [XmlAttribute]
         public double prix { get; set; }
+        [XmlAttribute]
         public int quantite { get; set; }
 
         public Article(string nom, double prix, int quantite)
